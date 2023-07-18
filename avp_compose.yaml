@@ -1,0 +1,28 @@
+services:
+  shadownet_avp:
+    container_name: shadownet_avp
+    image: shadowtechlabs/dod:latest
+    volumes:
+        - "./shadownet-config:/hunter/Software/Config"
+        - "./shadownet-logs:/hunter/Software/logs"
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    restart: always
+    ports:
+      -  8888:8888
+      -  38423:38423
+      -  9010:38423
+      -  41675:41675
+      -  50000:50000
+      -  1025:1025
+      -  587:587
+      -  1883:1883
+    networks:
+        shadownet:
+            ipv4_address: shadownetavp_ip
+#    command:
+#      - "-d"
+networks:
+    shadownet:
+      name: shadownet
+      external: true

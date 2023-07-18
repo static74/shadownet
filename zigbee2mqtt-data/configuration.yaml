@@ -1,0 +1,15 @@
+homeassistant: false
+permit_join: true
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://mqttserv
+  keepalive: 60
+  password: it!lian<>bEEf
+  reject_unauthorized: true
+  user: ello_govna
+  version: 4
+serial:
+  port: /dev/ttyUSB0
+frontend:
+  port: 8080
+devices:

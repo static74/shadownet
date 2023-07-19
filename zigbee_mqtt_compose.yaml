@@ -1,0 +1,40 @@
+services:
+  mqtt:
+    image: shadowtechlabs/mosquitto:latest
+    container_name: mqtt_broker
+    restart: always
+    volumes:
+      - "./mosquitto-data:/mosquitto"
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    command: "mosquitto -c /mosquitto.conf"
+    networks:
+        shadownet:
+            ipv4_address: mqtt_broker_ip
+
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    restart: always
+    image: koenkk/zigbee2mqtt
+    volumes:
+      - ./zigbee2mqtt-data:/app/data
+      - /run/udev:/run/udev:ro
+    ports:
+      - 8080:8080
+    environment:
+      - TZ=America/Chicago
+      - ZIGBEE2MQTT_CONFIG_MQTT_SERVER=mqtt://mqtt_broker_ip
+      - ZIGBEE2MQTT_CONFIG_FRONTEND_PORT=8080
+      - ZIGBEE2MQTT_CONFIG_SERIAL_PORT=/dev/ttyUSB0
+    devices:
+dongle:/dev/ttyUSB0
+    networks:
+        shadownet:
+            ipv4_address: zigbee2mqtt_ip
+    depends_on:
+      - mqtt
+networks:
+    shadownet:
+        name: shadownet
+        external: true

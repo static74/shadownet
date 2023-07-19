@@ -50,21 +50,20 @@ function yes_no() {
 }
 
 # Function for docker login
-function docker_login() {
+while true; do
     read -p "Enter your Docker Hub username: " username
     read -s -p "Enter your Docker Hub password: " password
-    echo
-
+    
     # Attempt to log in to Docker Hub
     echo "$password" | docker login --username "$username" --password-stdin
 
     # Check if the login was successful
     if [ $? -eq 0 ]; then
-        echo "Login successful!"
+        break
     else
         echo "Login failed. Please check your credentials and try again."
     fi
-}
+done
 
 
 ### initial setup data
@@ -102,13 +101,6 @@ while true; do
         echo "Invalid IP address format. Please try again."
     fi
 done
-
-# Docker login
-echo "credentials required to log into docker repository"
-while true; do
-    docker_login
-done
-
 
 # Docker login
 echo "credentials required to log into docker repository"

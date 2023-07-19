@@ -119,7 +119,7 @@ if [[ "$1" == "--pull" ]]; then
     echo -e "Network shadownet is \033[32m established\033[0m."
   else
     echo -e "Network shadownet is not \033[31mestbalished\033[0m."
-      docker network create -d ipvlan --subnet=10.0.0.0/24 --gateway=10.0.0.1 -o ipvlan_mode=l2 -o parent=enp1s0 shadownet
+      docker network create -d ipvlan --subnet=dsubnet --gateway=dgateway -o ipvlan_mode=l2 -o parent=dapater shadownet
   fi
 
 else

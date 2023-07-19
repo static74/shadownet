@@ -159,21 +159,17 @@ fi
 #create shadownet-network
 docker network create -d ipvlan --subnet=$subnet --gateway=$docker_gateway -o ipvlan_mode=l2 -o parent=$adapter shadownet
 
+#update config files
 sed -i "s,shadownetavp_ip,$shadownetavp_ip,g" $COMPOSE_FILE
 sed -i "s,zigbee2mqtt_ip,$zigbee2mqtt_ip,g" $MQTT_COMPOSE_FILE 
 sed -i "s,mqtt_broker_ip,$mqtt_broker_ip,g" $MQTT_COMPOSE_FILE
 sed -i "s,dgateway,$docker_gateway,g" helper.sh
 sed -i "s,dsubnet,$subnet,g" helper.sh
 sed -i "s,dadapter,$adapter,g" helper.sh
-
-echo "networks created"
-
-#assign ip addresses to the container
-sed -i "s,shadownetavp_ip,$shadownetavp_ip,g" $COMPOSE_FILE
-
+sed -i "s,mqttserv,$mqtt_broker_ip,g" zigbee2mqtt-data\configuration.yaml
 
 #image pull
 docker-compose -f $COMPOSE_FILE pull
 docker-compose -f $MQTT_COMPOSE_FILE pull
 
-echo "done" 
+echo "*fin" 

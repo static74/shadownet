@@ -4,9 +4,9 @@ mqtt:
   base_topic: zigbee2mqtt
   server: mqtt://mqttserv
   keepalive: 60
-  password: it!lian<>bEEf
+  password: mqtt_broker_pass
   reject_unauthorized: true
-  user: ello_govna
+  user: mqtt_broker_user
   version: 4
 serial:
   port: /dev/ttyUSB0

@@ -63,7 +63,6 @@ function docker_login() {
     # Check if the login was successful
     if [ $? -eq 0 ]; then
         echo "Login successful!"
-        exit 0
     else
         echo "Login failed. Please check your credentials and try again."
     fi
@@ -112,25 +111,6 @@ while true; do
     docker_login
 done
 
-# Ask the user for the zigbee2mqtt server IP
-while true; do
-    read -p "Enter zigbee2mqtt container IP address: " zigbee2mqtt_ip
-    if validate_ip "$zigbee2mqtt_ip"; then
-        break
-    else
-        echo "Invalid IP address format. Please try again."
-    fi
-done
-
-# Ask the user for the mqtt_broker server IP
-while true; do
-    read -p "Enter mqtt_broker container IP address: " mqtt_broker_ip
-    if validate_ip "$mqtt_broker_ip"; then
-        break
-    else
-        echo "Invalid IP address format. Please try again."
-    fi
-done
 
 # Docker login
 echo "credentials required to log into docker repository"
@@ -144,14 +124,42 @@ yes_no "Do you want to add Zigbee support?"
 if [ "$is_true" = "true" ]; then
     # Search for a device containing the word "Sonoff" in /dev/serial/by-id/
     sonoff_device=$(find /dev/serial/by-id/ -type l -name "*Sonoff*")
-    
+      while true; do
+        read -p "Enter zigbee2mqtt container IP address: " zigbee2mqtt_ip
+        if validate_ip "$zigbee2mqtt_ip"; then
+            break
+        else
+            echo "Invalid IP address format. Please try again."
+        fi
+      done
+    # Ask the user for the mqtt_broker server IP
+      while true; do
+        read -p "Enter mqtt_broker container IP address: " mqtt_broker_ip
+            if validate_ip "$mqtt_broker_ip"; then
+            break
+        else
+            echo "Invalid IP address format. Please try again."
+        fi
+      done
+    # Ask the user for the username and password for the MQTT Broker
+        read -p "Enter the desired username for the MQTT Broker: " mqtt_broker_user
+        read -p "Enter the desired password for the MQTT Broker: " mqtt_broker_pass
+    #Perform conifg file edits
+    sed -i "s,zigbee2mqtt_ip,$zigbee2mqtt_ip,g" $MQTT_COMPOSE_FILE 
+    sed -i "s,mqtt_broker_ip,$mqtt_broker_ip,g" $MQTT_COMPOSE_FILE
+    sed -i "s,mqttserv,$mqtt_broker_ip,g" zigbee2mqtt-data\configuration.yaml
+    sed -i "s,mqtt_broker_user,$mqtt_broker_user,g" zigbee2mqtt-data\configuration.yaml
+    sed -i "s,mqtt_broker_pass,$mqtt_broker_pass,g" zigbee2mqtt-data\configuration.yaml
+    echo "MQTT settings applied" 
     # Check if any matching device was found
     if [ -n "$sonoff_device" ]; then
       echo "Sonoff device found: $sonoff_device"
       #format text and insert into config file
       sed -i "s,dongle,       - $sonoff_device,g" $MQTT_COMPOSE_FILE
+      # Ask the user for the zigbee2mqtt server IP
+
     else
-      echo "No Sonoff device found. Skipping." || break
+      echo -e "\033[31mWarning! No Sonoff USB device found. The device will need manually configured.\033[0m" || break
     fi
 fi
 
@@ -161,12 +169,10 @@ docker network create -d ipvlan --subnet=$subnet --gateway=$docker_gateway -o ip
 
 #update config files
 sed -i "s,shadownetavp_ip,$shadownetavp_ip,g" $COMPOSE_FILE
-sed -i "s,zigbee2mqtt_ip,$zigbee2mqtt_ip,g" $MQTT_COMPOSE_FILE 
-sed -i "s,mqtt_broker_ip,$mqtt_broker_ip,g" $MQTT_COMPOSE_FILE
 sed -i "s,dgateway,$docker_gateway,g" helper.sh
 sed -i "s,dsubnet,$subnet,g" helper.sh
 sed -i "s,dadapter,$adapter,g" helper.sh
-sed -i "s,mqttserv,$mqtt_broker_ip,g" zigbee2mqtt-data\configuration.yaml
+
 
 #image pull
 docker-compose -f $COMPOSE_FILE pull

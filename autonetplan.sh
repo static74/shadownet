@@ -1,5 +1,5 @@
 #!/bin/bash
-
+[ "$UID" -eq 0 ] || exec sudo "$0" "$@"
 echo "initial setup parameters are required to continue"
 adapter=$(ip route get 8.8.8.8 | awk '{print $5}')
 echo "Using active network adapter: $adapter"

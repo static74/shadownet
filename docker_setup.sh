@@ -106,15 +106,15 @@ done
 yes_no "Do you want to add Zigbee support?"
 if [ "$is_true" = "true" ]; then
     # Search for a device containing the word "Sonoff" in /dev/serial/by-id/
-    sonoff_device=$(find /dev/serial/by-id/ -type l -name "*Sonoff*") >/dev/null 2>&1
-      while true; do
+    sonoff_device=$(find /dev/serial/by-id/ -type l -name "*Sonoff*" 2>/dev/null) 
+    while true; do
         read -p "Enter zigbee2mqtt container IP address: " zigbee2mqtt_ip
         if validate_ip "$zigbee2mqtt_ip"; then
-            breakcd 
+            break
         else
             echo "Invalid IP address format. Please try again."
         fi
-      done
+    done
     # Ask the user for the mqtt_broker server IP
       while true; do
         read -p "Enter mqtt_broker container IP address: " mqtt_broker_ip

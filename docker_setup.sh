@@ -5,10 +5,8 @@
 apt update && apt install docker.io docker-compose -y
 
 #making directory and moving contents
-git clone https://github.com/static74/shadownet
 mkdir -p /software/docker
-mv shadownet/* /software/docker
-rm -rf shadownet
+mv -- * /software/docker
 cd /software/docker || exit 
 chmod +X helper.sh
 COMPOSE_FILE=avp_compose.yaml

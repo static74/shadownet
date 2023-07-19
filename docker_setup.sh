@@ -102,13 +102,6 @@ while true; do
     fi
 done
 
-# Docker login
-echo "credentials required to log into docker repository"
-while true; do
-    docker_login
-done
-
-
 # Zigbee Support Option
 yes_no "Do you want to add Zigbee support?"
 if [ "$is_true" = "true" ]; then

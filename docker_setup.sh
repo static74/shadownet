@@ -106,11 +106,11 @@ done
 yes_no "Do you want to add Zigbee support?"
 if [ "$is_true" = "true" ]; then
     # Search for a device containing the word "Sonoff" in /dev/serial/by-id/
-    sonoff_device=$(find /dev/serial/by-id/ -type l -name "*Sonoff*")
+    sonoff_device=$(find /dev/serial/by-id/ -type l -name "*Sonoff*") >/dev/null 2>&1
       while true; do
         read -p "Enter zigbee2mqtt container IP address: " zigbee2mqtt_ip
         if validate_ip "$zigbee2mqtt_ip"; then
-            break
+            breakcd 
         else
             echo "Invalid IP address format. Please try again."
         fi
@@ -134,14 +134,14 @@ if [ "$is_true" = "true" ]; then
     sed -i "s,mqtt_broker_user,$mqtt_broker_user,g" zigbee2mqtt-data\configuration.yaml
     sed -i "s,mqtt_broker_pass,$mqtt_broker_pass,g" zigbee2mqtt-data\configuration.yaml
     echo "MQTT settings applied" 
+    docker-compose -f $MQTT_COMPOSE_FILE pull
     # Check if any matching device was found
     if [ -n "$sonoff_device" ]; then
       echo "Sonoff device found: $sonoff_device"
       #format text and insert into config file
       sed -i "s,dongle,       - $sonoff_device,g" $MQTT_COMPOSE_FILE
-      # Ask the user for the zigbee2mqtt server IP
-
     else
+      sudo sed '/devices/,+1d' zigbee_mqtt_compose.yaml
       echo -e "\033[31mWarning! No Sonoff USB device found. The device will need manually configured.\033[0m" || break
     fi
 fi
@@ -159,6 +159,6 @@ sed -i "s,dadapter,$adapter,g" helper.sh
 
 #image pull
 docker-compose -f $COMPOSE_FILE pull
-docker-compose -f $MQTT_COMPOSE_FILE pull
+
 
 echo "*fin" 

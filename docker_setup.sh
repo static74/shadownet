@@ -1,4 +1,8 @@
 #!/bin/bash
+
+## The super premium docker setup script by Shane mf' Davis
+
+
 [ "$UID" -eq 0 ] || exec sudo "$0" "$@"
 
 #installing dependancies 
@@ -8,7 +12,7 @@ apt update && apt install docker.io docker-compose -y
 mkdir -p /software/docker
 mv -- * /software/docker
 cd /software/docker || exit 
-chmod +X helper.sh
+chmod +x helper.sh
 COMPOSE_FILE=avp_compose.yaml
 MQTT_COMPOSE_FILE=zigbee_mqtt_compose.yaml
 
@@ -139,11 +143,11 @@ if [ "$is_true" = "true" ]; then
       #format text and insert into config file
       sed -i "s,dongle,       - $sonoff_device,g" $MQTT_COMPOSE_FILE
     else
-      sudo sed -n '/devices/,+1d' $MQTT_COMPOSE_FILE
+      sudo sed -i '/devices:/,+1d' $MQTT_COMPOSE_FILE 
       echo -e "\033[31mWarning! No Sonoff USB device found. The device will need manually configured.\033[0m" || break
     fi
     echo -e "\033[32mMQTT settings applied. Downloading images.\033[0m"
-    docker-compose -f $MQTT_COMPOSE_FILE pull
+    docker-compose -f $MQTT_COMPOSE_FILE up -d
 fi
 
 
@@ -158,6 +162,6 @@ sed -i "s,dadapter,$adapter,g" helper.sh
 echo -e "\033[32mShadownet settings applied. Downloading images.\033[0m"
 
 #image pull
-docker-compose -f $COMPOSE_FILE pull
+docker-compose -f $COMPOSE_FILE up -d
 
 echo -e "\033[32m*fin\033[0m"

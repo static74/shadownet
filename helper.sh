@@ -7,6 +7,11 @@
 ##new_line
 ##new_tag
 ##response
+##Another script created by Shane mf' Davis
+
+[ "$UID" -eq 0 ] || exec sudo "$0" "$@"
+cd /software/docker/ || exit
+
 
 echo "███████╗████████╗██╗      ███████╗██╗  ██╗ ██████╗ ██╗  ██╗"
 echo "██╔════╝╚══██╔══╝██║      ██╔════╝██║  ██║██╔═══██╗██║ ██╔╝"

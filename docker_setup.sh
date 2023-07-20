@@ -139,7 +139,7 @@ if [ "$is_true" = "true" ]; then
       #format text and insert into config file
       sed -i "s,dongle,       - $sonoff_device,g" $MQTT_COMPOSE_FILE
     else
-      sudo sed -e '/devices/,+1d' $MQTT_COMPOSE_FILE
+      sudo sed -n '/devices/,+1d' $MQTT_COMPOSE_FILE
       echo -e "\033[31mWarning! No Sonoff USB device found. The device will need manually configured.\033[0m" || break
     fi
     echo -e "\033[32mMQTT settings applied. Downloading images.\033[0m"

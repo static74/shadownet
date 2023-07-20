@@ -146,8 +146,8 @@ if [ "$is_true" = "true" ]; then
       sudo sed -i '/devices:/,+1d' $MQTT_COMPOSE_FILE 
       echo -e "\033[31mWarning! No Sonoff USB device found. The device will need manually configured.\033[0m" || break
     fi
-    echo -e "\033[32mMQTT settings applied. Downloading images.\033[0m"
-    docker-compose -f $MQTT_COMPOSE_FILE up -d
+    echo -e "\033[32mMQTT settings applied.\033[0m"
+    mqtt_set=1
 fi
 
 
@@ -159,9 +159,13 @@ sed -i "s,shadownetavp_ip,$shadownetavp_ip,g" $COMPOSE_FILE
 sed -i "s,dgateway,$docker_gateway,g" helper.sh
 sed -i "s,dsubnet,$subnet,g" helper.sh
 sed -i "s,dadapter,$adapter,g" helper.sh
-echo -e "\033[32mShadownet settings applied. Downloading images.\033[0m"
+echo -e "\033[32mShadownet settings applied.\033[0m"
 
-#image pull
+#image pull and start
+echo -e "\033[32mDownloading and starting applications...\033[0m"
+if [ "$mqtt_set" = 1 ]; then 
+    docker-compose -f $MQTT_COMPOSE_FILE up -d
+fi
 docker-compose -f $COMPOSE_FILE up -d
 
 echo -e "\033[32m*fin\033[0m"

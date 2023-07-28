@@ -146,14 +146,14 @@ if [ "$is_true" = "true" ]; then
     #Perform conifg file edits
     sed -i "s,zigbee2mqtt_ip,$zigbee2mqtt_ip,g" $MQTT_COMPOSE_FILE 
     sed -i "s,mqtt_broker_ip,$mqtt_broker_ip,g" $MQTT_COMPOSE_FILE
-    sed -i "s,mqttserv,$mqtt_broker_ip,g" zigbee2mqtt-data/configuration.yaml
+    sed -i "s,mqtt_broker_ip,$mqtt_broker_ip,g" zigbee2mqtt-data/configuration.yaml
     sed -i "s,mqtt_broker_user,$mqtt_broker_user,g" zigbee2mqtt-data/configuration.yaml
     sed -i "s,mqtt_broker_pass,$mqtt_broker_pass,g" zigbee2mqtt-data/configuration.yaml
     # Check if any matching device was found
     if [ -n "$sonoff_device" ]; then
       echo "Sonoff device found: $sonoff_device"
       #format text and insert into config file
-      sed -i "s,dongle,       - $sonoff_device,g" $MQTT_COMPOSE_FILE
+      sed -i "s,sonoff,$sonoff_device,g" $MQTT_COMPOSE_FILE
     else
       sudo sed -i '/devices:/,+1d' $MQTT_COMPOSE_FILE 
       echo -e "\033[31mWarning! No Sonoff USB device found. The device will need manually configured.\033[0m" || break

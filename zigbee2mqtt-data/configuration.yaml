@@ -2,14 +2,14 @@ homeassistant: false
 permit_join: true
 mqtt:
   base_topic: zigbee2mqtt
-  server: mqtt://mqttserv
+  server: mqtt://mqtt_broker_ip
   keepalive: 60
   password: mqtt_broker_pass
-  reject_unauthorized: true
+  reject_unauthorized: false
   user: mqtt_broker_user
   version: 4
 serial:
   port: /dev/ttyUSB0
 frontend:
   port: 8080
-devices:
+passlist: []

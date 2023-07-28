@@ -1,18 +1,20 @@
 services:
   mqtt:
-    image: shadowtechlabs/mosquitto:latest
+    image: eclipse-mosquitto
     container_name: mqtt_broker
     restart: always
     volumes:
-      - "./mosquitto-data:/mosquitto"
+      - "./mosquitto-data/mosquitto:/mosquitto"
+      - "./mosquitto-data/mosquitto.conf:/mosquitto/config/mosquitto.conf"
+      - "./mosquitto-data/passwd_file:/mosquitto/passwd_file"
+
     ports:
       - "1883:1883"
       - "9001:9001"
-    command: "mosquitto -c /mosquitto.conf"
     networks:
         shadownet:
             ipv4_address: mqtt_broker_ip
-
+            
   zigbee2mqtt:
     container_name: zigbee2mqtt
     restart: always

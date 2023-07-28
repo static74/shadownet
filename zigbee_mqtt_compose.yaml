@@ -11,7 +11,7 @@ services:
     command: "mosquitto -c /mosquitto.conf"
     networks:
         shadownet:
-            ipv4_address: mqttserv
+            ipv4_address: mqtt_broker_ip
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
